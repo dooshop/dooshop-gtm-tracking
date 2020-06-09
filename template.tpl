@@ -136,7 +136,7 @@ if (data.tagType === 'lp') {
     });
   }
   data.gtmOnSuccess();
-} else {
+} else if (data.tagType === 'conv') {
   const dooid = getCookieValues(cookieName);
   if (dooid.length) {
     let url = urlBase + data.shopId + '/tsa?typ=i&trc=default&ctg=sale&sid=checkout&tst=' + time;
