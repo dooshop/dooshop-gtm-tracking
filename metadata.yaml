@@ -1,8 +1,5 @@
 homepage: "https://doo.shop/"
 versions:
   # Latest version
-  - sha: cf1c20970e3df82fe3c54a24dbf7df01b6c0bdac
-    changeNotes: renamed template.
+  - sha: 1f666b96d6ab6de3b0ee0490355571c4bd28694c
   # Older versions
-  - sha: 325648d3e29387991fe031143bfa842caec61a6b
-    changeNotes: Initial release.
