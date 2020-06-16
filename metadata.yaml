@@ -1,5 +1,6 @@
 homepage: "https://doo.shop/"
 versions:
   # Latest version
-  - sha: 1f666b96d6ab6de3b0ee0490355571c4bd28694c
+  - sha: 4afa1725127377a2f1f9ac565fedb82e33503b87
+    changeNotes: Initial release
   # Older versions
