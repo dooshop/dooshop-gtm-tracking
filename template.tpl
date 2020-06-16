@@ -139,7 +139,7 @@ if (data.tagType === 'lp') {
 } else if (data.tagType === 'conv') {
   const dooid = getCookieValues(cookieName);
   if (dooid.length) {
-    let url = urlBase + enc(data.shopId) + '/tsa?typ=i&trc=default&ctg=sale&sid=checkout&tst=' + enc(time);
+    let url = urlBase + enc(data.shopId) + '/tsa?typ=i&trc=default&ctg=sale&sid=checkout&tst=' + time;
     if (data.orderId) url += '&cid=' + enc(data.orderId);
     if (data.orderValue) url += '&orv=' + enc(data.orderValue);
     if (data.currency) url += '&orc=' + enc(data.currency);
