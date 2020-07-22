@@ -12,8 +12,10 @@ ___INFO___
   "type": "TAG",
   "id": "cvt_temp_public_id",
   "version": 1,
-  "categories": ["AFFILIATE_MARKETING"],
-  "__wm": "VGVtcGxhdGUtQXV0aG9yX2Rvb3Nob3AtU2ltby1BaGF2YQ==",
+  "categories": [
+    "AFFILIATE_MARKETING"
+  ],
+  "__wm": "VGVtcGxhdGUtQXV0aG9yX2Rvb3Nob3AtU2ltby1BaGF2YQ\u003d\u003d",
   "securityGroups": [],
   "displayName": "dooshop Tracking",
   "brand": {
@@ -110,6 +112,7 @@ ___TEMPLATE_PARAMETERS___
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
+const getContainerVersion = require('getContainerVersion');
 const getCookieValues = require('getCookieValues');
 const setCookie = require('setCookie');
 const sendPixel = require('sendPixel');
@@ -122,6 +125,7 @@ const log = require('logToConsole');
 const cookieName = '__doo_id';
 const urlBase = 'https://one.do.dmodule1.com/ts/';
 
+const containerVersion = getContainerVersion().version;
 const time = Math.round(getTimestamp() / 1000);
 
 if (data.tagType === 'lp') {
@@ -138,17 +142,20 @@ if (data.tagType === 'lp') {
   data.gtmOnSuccess();
 } else if (data.tagType === 'conv') {
   const dooid = getCookieValues(cookieName);
+  let url = urlBase + enc(data.shopId) + '/tsa?typ=i&trc=default&ctg=sale&sid=checkout&uv1=GTM&uv2=' + containerVersion;
   if (dooid.length) {
-    let url = urlBase + enc(data.shopId) + '/tsa?typ=i&trc=default&ctg=sale&sid=checkout&tst=' + time;
+    url += '&uv3=true&tst=' + time;
     if (data.orderId) url += '&cid=' + enc(data.orderId);
     if (data.orderValue) url += '&orv=' + enc(data.orderValue);
     if (data.currency) url += '&orc=' + enc(data.currency);
     url += '&cli=' + enc(dooid[0]);
-    sendPixel(url, data.gtmOnSuccess, data.gtmOnFailure);
   } else {
-    log('[doo/shop] dooID not found in cookie __doo_id. Conversion not sent.');
-    data.gtmOnSuccess();
+    url += '&uv3=false&tst=' + time;
+    if (data.orderId) url += '&cid=' + enc(data.orderId);
+    if (data.orderValue) url += '&orv=' + enc(data.orderValue);
+    if (data.currency) url += '&orc=' + enc(data.currency);
   }
+  sendPixel(url, data.gtmOnSuccess, data.gtmOnFailure);
 }
 
 
@@ -347,6 +354,16 @@ ___WEB_PERMISSIONS___
       "isEditedByUser": true
     },
     "isRequired": true
+  },
+  {
+    "instance": {
+      "key": {
+        "publicId": "read_container_data",
+        "versionId": "1"
+      },
+      "param": []
+    },
+    "isRequired": true
   }
 ]
 
@@ -366,31 +383,27 @@ scenarios:
     });\n    \n// Call runCode to run the template's code.\nrunCode(mockData);\n\n\
     // Verify that the tag finished successfully.\nassertApi('setCookie').wasCalledWith('__doo_id',\
     \ '123456789', mockCookieOptions);\nassertApi('gtmOnSuccess').wasCalled();"
-- name: Log error if dooid not found
-  code: |-
-    mockData.tagType = 'conv';
-    mock('getCookieValues', key => {
-      if (key === '__doo_id') return [];
-      else fail('getCookieValues() called with invalid cookie name: ' + key);
-    });
-
-    // Call runCode to run the template's code.
-    runCode(mockData);
-
-    // Verify that the tag finished successfully.
-    assertApi('sendPixel').wasNotCalled();
-    assertApi('logToConsole').wasCalled();
-    assertApi('gtmOnSuccess').wasCalled();
+- name: Send pixel with uv3=false if dooid not found
+  code: "mockData.tagType = 'conv';\nlet success, failure;\n\nmock('getTimestamp',\
+    \ () => {\n  return 123456789000;\n});  \nmock('getCookieValues', key => {\n \
+    \ if (key === '__doo_id') return [];\n  else fail('getCookieValues() called with\
+    \ invalid cookie name: ' + key);\n});\nmock('sendPixel', (url, onsuccess, onfailure)\
+    \ => {\n  success = onsuccess;\n  failure = onfailure;\n  onsuccess();\n});\n\n\
+    mockUrl = mockUrl.replace('&uv3=true', '&uv3=false');\n  \n// Call runCode to\
+    \ run the template's code.\nrunCode(mockData);\n\n// Verify that the tag finished\
+    \ successfully.\nassertApi('getTimestamp').wasCalled();\nassertApi('sendPixel').wasCalledWith(mockUrl,\
+    \ success, failure);\nassertApi('gtmOnSuccess').wasCalled();"
 - name: Send pixel if dooid found
   code: "mockData.tagType = 'conv';\nlet success, failure;\n\nmock('getTimestamp',\
     \ () => {\n  return 123456789000;\n});  \nmock('getCookieValues', key => {\n \
     \ if (key === '__doo_id') return ['123456789'];\n  else fail('getCookieValues()\
     \ called with invalid cookie name: ' + key);\n});\nmock('sendPixel', (url, onsuccess,\
     \ onfailure) => {\n  success = onsuccess;\n  failure = onfailure;\n  onsuccess();\n\
-    });\n  \n// Call runCode to run the template's code.\nrunCode(mockData);\n\n//\
-    \ Verify that the tag finished successfully.\nassertApi('getTimestamp').wasCalled();\n\
-    assertApi('sendPixel').wasCalledWith(mockUrl, success, failure);\nassertApi('gtmOnSuccess').wasCalled();"
-setup: |
+    });\n\nmockUrl += '&cli=123456789';\n  \n// Call runCode to run the template's\
+    \ code.\nrunCode(mockData);\n\n// Verify that the tag finished successfully.\n\
+    assertApi('getTimestamp').wasCalled();\nassertApi('sendPixel').wasCalledWith(mockUrl,\
+    \ success, failure);\nassertApi('gtmOnSuccess').wasCalled();"
+setup: |-
   const mockData = {
     tagType: 'lp',
     shopId: 'shopId',
@@ -399,7 +412,7 @@ setup: |
     currency: 'currency'
   };
 
-  const mockUrl = 'https://one.do.dmodule1.com/ts/' + mockData.shopId + '/tsa?typ=i&trc=default&ctg=sale&sid=checkout&tst=123456789&cid=orderId&orv=orderValue&orc=currency&cli=123456789';
+  let mockUrl = 'https://one.do.dmodule1.com/ts/' + mockData.shopId + '/tsa?typ=i&trc=default&ctg=sale&sid=checkout&uv1=GTM&uv2=test&uv3=true&tst=123456789&cid=orderId&orv=orderValue&orc=currency';
 
   const mockCookieOptions = {
     domain: 'auto',
@@ -408,6 +421,12 @@ setup: |
     secure: true,
     samesite: 'None'
   };
+
+  mock('getContainerVersion', () => {
+    return {
+      version: 'test'
+    };
+  });
 
 
 ___NOTES___
