@@ -1,9 +1,11 @@
 homepage: "https://doo.shop/"
 versions:
   # Latest version
+  - sha: 4fd76a1c15dcbd43d5abf051bc28ea4e4cdb4296
+    changeNotes: Use drop-down menus for Order ID and Order Value.
+  # Older versions
   - sha: f6501d2e6b080bf429626630cc0fdbf5dff0d2f6
     changeNotes: Send conversion even if dooid is not found in the cookie.
-  # Older versions
   - sha: 07567a174a53305d0797cfae5011dcf35b57a913
     changeNotes: Initial release
   

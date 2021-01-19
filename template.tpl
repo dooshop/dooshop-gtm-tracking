@@ -78,17 +78,19 @@ ___TEMPLATE_PARAMETERS___
     "groupStyle": "ZIPPY_OPEN",
     "subParams": [
       {
-        "type": "TEXT",
+        "type": "SELECT",
         "name": "orderId",
         "displayName": "Order ID",
+        "macrosInSelect": true,
+        "selectItems": [
+          {
+            "value": "choose",
+            "displayValue": "Choose a variable..."
+          }
+        ],
         "simpleValueType": true,
-        "help": "Provide a string that uniquely identifies the order, such as a transaction/order ID."
-      },
-      {
-        "type": "TEXT",
-        "name": "orderValue",
-        "displayName": "Order Value (excl. taxes)",
-        "simpleValueType": true
+        "help": "Choose a Google Tag Manager variable which returns the Order ID.",
+        "defaultValue": "choose"
       },
       {
         "type": "TEXT",
@@ -97,6 +99,21 @@ ___TEMPLATE_PARAMETERS___
         "simpleValueType": true,
         "help": "Provide the currency code of the order in ISO 4217 format.",
         "defaultValue": "EUR"
+      },
+      {
+        "type": "SELECT",
+        "name": "orderValue",
+        "displayName": "Order Value (excl. taxes)",
+        "macrosInSelect": true,
+        "selectItems": [
+          {
+            "value": "choose",
+            "displayValue": "Choose a variable..."
+          }
+        ],
+        "simpleValueType": true,
+        "defaultValue": "choose",
+        "help": "Choose a Google Tag Manager variable which returns the value of the order as a number, excluding taxes."
       }
     ],
     "enablingConditions": [
@@ -187,6 +204,13 @@ ___WEB_PERMISSIONS___
         "versionId": "1"
       },
       "param": [
+        {
+          "key": "allowedUrls",
+          "value": {
+            "type": 1,
+            "string": "specific"
+          }
+        },
         {
           "key": "urls",
           "value": {
