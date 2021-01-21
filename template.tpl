@@ -93,14 +93,6 @@ ___TEMPLATE_PARAMETERS___
         "defaultValue": "choose"
       },
       {
-        "type": "TEXT",
-        "name": "currency",
-        "displayName": "Currency Code",
-        "simpleValueType": true,
-        "help": "Provide the currency code of the order in ISO 4217 format.",
-        "defaultValue": "EUR"
-      },
-      {
         "type": "SELECT",
         "name": "orderValue",
         "displayName": "Order Value (excl. taxes)",
@@ -114,6 +106,14 @@ ___TEMPLATE_PARAMETERS___
         "simpleValueType": true,
         "defaultValue": "choose",
         "help": "Choose a Google Tag Manager variable which returns the value of the order as a number, excluding taxes."
+      },
+      {
+        "type": "TEXT",
+        "name": "currency",
+        "displayName": "Currency Code",
+        "simpleValueType": true,
+        "help": "Provide the currency code of the order in ISO 4217 format.",
+        "defaultValue": "EUR"
       }
     ],
     "enablingConditions": [
